@@ -1,0 +1,233 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>第四题</title>
+    <style type="text/css">
+        *{ margin: 0; padding: 0;}
+        body{ position: relative; text-align: center; height: 700px;}
+        input{ position: absolute;}
+        #btn01{ top: 0px; left: 0px;}
+        #btn02{ top: 0px; right: 0px;}
+        #btn03{ bottom: 0px; left: 0px;}
+        #btn04{ bottom: 0px; right: 0px;}
+        #btn05{ top: 677px; left: 200px;}
+        #btn06{ top: 353px; left: 0px;}
+        #btn07{ top: 221px; left: 657px;}
+        #btn08{ top: 565px; left: 1254px;}
+        #btn09{ top: 331px; left: 893px;}
+        #btn10{ top: 434px; left: 555px;}
+        #btn11{ top: 666px; left: 777px;}
+        ul{ width: 100px; background: #ccc;}
+        li{ list-style: none; height: 20px; border: 1px solid #000; cursor: pointer;}
+    </style>
+    <script type="text/javascript">
+        var Menu = function(element,dat){
+            this.element = element; //绑定的元素
+            this.dat = this.clone(dat); //克隆菜单对象
+            this.on = false ; //显示开关
+            this.list = []; //显示队列
+            this.time = null; //关闭二级菜单定时
+            this.time2 = null; //关闭所有菜单定时
+            this.init(this.element, this.dat);
+        }
+        Menu.prototype = {
+            init:function(ele, dat){
+                var _this = this;
+                ele.onclick = function(){_this.get(ele);}
+            },
+            get: function(ele, obj){  //获取菜单，如果传obj，则获取相应位置下的二级菜单，否则，则获取一级菜单
+                var _this = this, arr, on, tag, oUl;
+                if(obj){
+                    arr = obj.list;
+                    on = obj.on;
+                    tag = 2;
+                }else{
+                    arr = _this.dat;
+                    on = _this.on;
+                    tag = 1;
+                }
+                if(on){return;} //如果存在，返回
+                oUl = document.createElement('ul');
+                oUl.style.position = 'absolute';
+                oUl.style.display = 'none';
+                document.body.appendChild(oUl);
+                _this.list.push(oUl); //放入队列
+                oUl.onmouseover = function(){ //鼠标处于菜单时候，清楚定时器
+                    clearTimeout(_this.time);
+                    clearTimeout(_this.time2);
+                }
+                if(obj){ //如果有2级菜单
+                    ele.onmouseout = function(){
+                        _this.time = setTimeout(function(){ //关闭相应2级菜单
+                            obj.on = false;
+                            if(oUl.parentNode){oUl.parentNode.removeChild(oUl);}
+                        },10);
+                    }
+                    oUl.onmouseout = function(){ //鼠标移出2级菜单时候开启定时器
+                        _this.time2 = setTimeout(function(){
+                            _this.remove();
+                        },10);
+                        _this.time = setTimeout(function(){
+                            obj.on = false;
+                            if(oUl.parentNode){oUl.parentNode.removeChild(oUl);}
+                        },10);
+                    }
+                }else{ //如果没有2级
+                    ele.onclick = function(){ //按钮点击关闭1级菜单
+                        if(_this.on){
+                            _this.on = false;
+                            if(oUl.parentNode){oUl.parentNode.removeChild(oUl);}
+                        }else{
+                            _this.get(ele);
+                        }
+                    }
+                    oUl.onmouseout = function(){ //鼠标移出1级菜单开启定时器
+                        _this.time2 = setTimeout(function(){
+                            _this.remove();
+                        },1);
+                    }
+                }
+                for(var i=0, len=arr.length; i<len; i++){ //创建菜单子元素
+                    oUl.appendChild(document.createElement('li'));
+                    oUl.childNodes[i].innerHTML = arr[i].content;
+                    if(obj){ //2级
+                        obj.on = true;
+                        oUl.childNodes[i].onclick = function(){
+                            alert(this.innerHTML);
+                        }
+                    }else{ //1级
+                        _this.on = true;
+                        oUl.childNodes[i].onmouseover = (function(i){
+                            return function(){
+                                _this.time = null;
+                                _this.get(this, _this.dat[i]); //获取下级列表
+                            }
+                        }(i))
+                    }
+                }
+                _this.show(ele, oUl, tag);
+            },
+            show: function(ele,list,tag){ //显示菜单，ele触发元素,list菜单元素，tag菜单级别：1或2
+                list.style.display = 'block';
+                var ele_l = ele.offsetLeft,
+                    ele_t = ele.offsetTop,
+                    ele_w = ele.offsetWidth,
+                    ele_h = ele.offsetHeight,
+                    list_w = list.offsetWidth,
+                    list_h = list.offsetHeight,
+                    w = document.body.offsetWidth,
+                    h = document.body.offsetHeight;
+                if(tag==1){
+                    if((ele_t+ele_h/2)<=(h/2) || list_h<=(h-ele_t-ele_h)){
+                        list.style.top = ele_t + ele_h + 'px';
+                    }else{
+                        list.style.top = ele_t - list_h + 'px';
+                    }
+                    if((ele_l+ele_w/2)<=(w/2) || list_w<=(w-ele_l)){
+                        list.style.left = ele_l + 'px';
+                    }else{
+                        list.style.left = ele_l + ele_w - list_w + 'px';
+                    }
+                }else{
+                    ele_t += ele.parentNode.offsetTop;
+                    ele_l += ele.parentNode.offsetLeft;
+                    if((ele_t+ele_h/2)<=(h/2) || list_h<=(h-ele_t)){
+                        list.style.top = ele_t + 'px';
+                    }else{
+                        list.style.top = ele_t + ele_h - list_h + 'px';
+                    }
+                    if((ele_l+ele_w/2)<=(w/2) || list_w<=(w-ele_l-ele_w)){
+                        list.style.left = ele_l + ele_w + 'px';
+                    }else{
+                        list.style.left = ele_l - list_w + 'px';
+                    }
+                }
+            },
+            remove: function(){ //关闭菜单
+                var len = this.list.length;
+                this.on = false;
+                for(var i=0; i<len; i++){
+                    if(this.list[i].parentNode){
+                        this.list[i].parentNode.removeChild(this.list[i]);
+                    }
+                }
+                for(var j=0; j<this.dat.length; j++){
+                    this.dat[j].on = false;
+                }
+                this.list = [];//情况显示列表
+            },
+            clone: function(o){     //克隆对象
+                if(o){
+                    if(typeof(o)!='object' || o==null){
+                        return o;
+                    }else{
+                        var n = (o)instanceof(Array) ? [] : {} ;
+                        for(i in o){
+                            n[i] = arguments.callee(o[i]);
+                        }
+                        return n;
+                    }
+                }
+            }
+        }
+        window.onload = function(){
+            var dat = [ //模拟数据
+                {
+                    "content": "cate1",
+                    "list": [
+                        { "content":"1test1"},{ "content":"1test2"},{ "content":"1test3"},{ "content":"1test4"},{ "content":"1test5"},{ "content":"1test6"}
+                    ]
+                },
+                {
+                    "content": "cate2",
+                    "list": [
+                        { "content":"2test1"},{ "content":"2test2"},{ "content":"2test3"},{ "content":"2test4"}
+                    ]
+                },
+                {
+                    "content": "cate3",
+                    "list": [
+                        { "content":"3test1"},{ "content":"3test2"},{ "content":"3test3"},{ "content":"3test4"},{ "content":"3test5"},{ "content":"3test5"},{ "content":"3test7"}
+                    ]
+                },
+                {
+                    "content": "cate4",
+                    "list": [
+                        { "content":"4test1"},{ "content":"4test2"},{ "content":"4test3"},{ "content":"4test4"}
+                    ]
+                },
+                {
+                    "content": "cate5",
+                    "list": [
+                        { "content":"5test1"},{ "content":"5test2"},{ "content":"5test3"},{ "content":"5test4"},{ "content":"5test5"},{ "content":"5test6"},{ "content":"5test7"},{ "content":"5test8"},{ "content":"5test9"},{ "content":"5test10"}
+                    ]
+                }
+            ];
+            var $ = function(id){ return document.getElementById(id)}
+            new Menu($('btn01'), dat);
+            new Menu($('btn02'), dat);
+            new Menu($('btn03'), dat);
+            new Menu($('btn04'), dat);
+            new Menu($('btn05'), dat);
+            new Menu($('btn06'), dat);
+            new Menu($('btn07'), dat);
+            new Menu($('btn08'), dat);
+            new Menu($('btn09'), dat);
+            new Menu($('btn10'), dat);
+        }
+    </script>
+</head>
+<body>
+    <input type="button" id="btn01" value="button">
+    <input type="button" id="btn02" value="button">
+    <input type="button" id="btn03" value="button">
+    <input type="button" id="btn04" value="button">
+    <input type="button" id="btn05" value="button">
+    <input type="button" id="btn06" value="button">
+    <input type="button" id="btn07" value="button">
+    <input type="button" id="btn08" value="button">
+    <input type="button" id="btn09" value="button">
+    <input type="button" id="btn10" value="button">
+</body>
+</html>

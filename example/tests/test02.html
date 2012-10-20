@@ -141,8 +141,8 @@
                 box.style.left = (winW/2) - (eleW/2) + winL + 'px'; //位置
                 box.style.top = (winH/2) - (eleH/2) + winT +  'px';  //位置
                 box.style.zIndex = 9999;
-                box_tit.onmousedown = function(e){
-                    var e = e || window.event,
+                box_tit.onmousedown = function(event){
+                    var e = event || window.event,
                             ml = e.clientX,
                             mt = e.clientY,
                             nl = ml-ele.offsetLeft,
@@ -157,9 +157,9 @@
                         box.style.top = (mt - nt) + 'px';
                     }
                 }
-                box_tit.onmouseup = function(e){
-                    var e = e || window.event
-                    document.onselectstart = function(e){e.returnValue = true;}///恢复选择浏览器默认行为
+                box_tit.onmouseup = function(event){
+                    var e = event || window.event
+                    document.onselectstart = function(e){e.returnValue = true;}//恢复选择浏览器默认行为
                     document.onmousemove = null; //解除拖动事件
                 }
             },
