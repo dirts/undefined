@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>t e s t</title>
+        <meta charset="UTF-8" />
+        <style type="text/css">
+        	.pop{width:10px; height:10px; background: #ff0000; display:none; opacity:0; position:absolute; left:0px;}
+        </style>
+        <!-- <script src="http://javascript-class-library-ha.googlecode.com/svn/trunk/HA.js" type="text/javascript"></script> -->
+        <script src="HA.min.js" type="text/javascript"></script>
+        <script type="text/javascript">
+            HA.ready(function(){
+            	var b = HA.dom.byTag('body')[0];
+            	b.innerHTML += navigator.userAgent + '<br/>' ;
+            	b.innerHTML += HA.verify.browser() + '<br/>';
+                b.innerHTML += '\'' + HA.method.trimRight('    1    2    3       ') + '\'<br/>';
+                HA.dom.byAttr('title','TEST')[0].onclick = function(){
+                	this.style.color = 'red';
+                	alert(this.style.color);
+                }
+                HA.ui.popup(HA.dom.byId('po'),HA.dom.byId('x'));
+                // var newele = document.createElement('p');
+                // newele.innerHTML = '哈哈哈哈哈哈哈哈哈';
+                //HA.dom.before(HA.dom.byId('p2'),newele);
+                var pop = HA.dom.byId('po');
+                HA.ui.animat(pop,{'width':500,'height':500,'opacity':1,'top':150,'left':400},2000);
+            }); 
+			
+    	</script>
+    </head>
+    <body id="body">
+    	<h1 title="TEST" style="position: ">TEST PAGE</h1>
+	    	<p id="p1">p1</p>
+	    	<p id="p2">p2</p>
+	    	<div class="pop" id="po" style="top:0px;">
+	    		<span id="x">X</span><br>
+	    		飘呀飘
+	    	</div>
+
+    </body>
+</html>

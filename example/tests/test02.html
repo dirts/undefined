@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>第二题</title>
+    <style type="text/css">
+        body { padding: 20px; text-align: center;}
+        input{ margin: 5px;}
+        .popup{ position: absolute; width: auto; height: auto; }
+        .box_main{ border: 5px solid #919BA5; padding: 0 0 10px 0;background: #f6f6f6; text-align: right;}
+        .box_main p{ margin: 0 10px; padding: 15px 0; clear: both; text-align: left;}
+        .box_main input{margin-right: 10px}
+        .box_main_tit{ font-size: 18px; height: 30px; text-align: right; line-height: 30px; color: #fff; background: #919BA5; float: left; cursor: move;}
+        .box_main_tit span{ font-weight: bold; cursor: pointer;}
+        .popup iframe{ z-index: -1; position:absolute; top: 0px; left: 0px; border: none;}
+        .prompt_text{ margin-bottom: 5px; text-align: left;  }
+    </style>
+    <script type="text/javascript">
+        var $ = function(tag){return document.createElement(tag)}
+        var popup = {
+            /*
+             * 初始化方法
+             * type:弹窗类型（'alert'或'confirm'或'prompt'）
+             * text:弹窗显示的文字
+             * fun1:点击确定运行的函数，如果弹窗类型是prompt，第一个参数为弹窗文本框的value
+             * fun2:点击取消运行的函数
+             * */
+            init: function(type, text, fun1, fun2){
+                if(popup.boxlist[type]){return;}//如果存在弹窗，返回
+                var box = popup.createBox(type, text, fun1, fun2);
+                document.body.appendChild(box);
+                popup.showBox(box);
+                box.getElementsByTagName('span')[0].onclick=function(){ //绑定右上角X
+                    popup.hideBox(type, box);
+                }
+                popup.boxlist[type] = box;//添加到队列
+            },
+            createBox: function(type, text, fun1, fun2){ //创建弹窗dom对象
+                var oBox = $('div'),
+                        oBoxMain = $('div'),
+                        oboxMainTit = $('div'),
+                        oText = $('p'),
+                        oInputSure = $('input'),
+                        oCancel = $('input'),
+                        oIframe = $('iframe');
+
+                oText.innerHTML = text;
+
+                oInputSure.type = 'button';
+                oInputSure.value = '确定';
+
+                oCancel.type = 'button';
+                oCancel.value = '取消';
+
+                oBox.className = 'popup';
+                oBox.style.display = 'none';
+
+                oboxMainTit.className = 'box_main_tit';
+                oboxMainTit.innerHTML = '<span title="关闭">×</span>';
+
+                oBoxMain.appendChild(oboxMainTit);
+                oBoxMain.appendChild(oText);
+                oBoxMain.className = 'box_main';
+                switch (type){  //添加按钮，并绑定事件
+                    case 'confirm':
+                        oInputSure.onclick = function(){
+                            if(fun1){
+                                fun1();
+                            }
+                            popup.hideBox(type, oBox);
+                        }
+                        oCancel.onclick = function(){
+                            if(fun2){
+                                fun2();
+                            }
+                            popup.hideBox(type, oBox);
+                        }
+                        oBoxMain.appendChild(oInputSure);
+                        oBoxMain.appendChild(oCancel);
+                        break;
+                    case 'prompt':
+                        var oTextInput = $('input');
+                        oTextInput.type = 'text';
+                        oTextInput.value = '';
+                        oTextInput.className = 'prompt_text';
+                        oInputSure.onclick = function(){
+                            if(fun1){
+                                fun1(oTextInput.value);
+                            }
+                            popup.hideBox(type, oBox);
+                        }
+                        oCancel.onclick = function(){
+                            if(fun2){
+                                fun2();
+                            }
+                            popup.hideBox(type, oBox);
+                        }
+                        oBoxMain.appendChild(oTextInput);
+                        oBoxMain.appendChild($('br'));
+                        oBoxMain.appendChild(oInputSure);
+                        oBoxMain.appendChild(oCancel);
+                        break;
+                    default:
+                        oInputSure.onclick = function(){
+                            if(fun1){
+                                fun1();
+                            }
+                            popup.hideBox(type, oBox);
+                        }
+                        oBoxMain.appendChild(oInputSure);
+                        break;
+                }
+                oBox.appendChild(oIframe);
+                oBox.appendChild(oBoxMain);
+                return oBox;
+            },
+            showBox: function(box){ //显示弹窗
+                var ele = box,
+                        box_main = ele.getElementsByTagName('div')[0],
+                        s = box_main.style,
+                        box_iframe = ele.getElementsByTagName('iframe')[0],
+                        box_inputs = ele.getElementsByTagName('input'),
+                        box_tit = box_main.getElementsByTagName('div')[0],
+                        winW = window.innerWidth || document.documentElement.clientWidth,
+                        winH = window.innerHeight || document.documentElement.clientHeight,
+                        winL = window.scrollX || document.documentElement.scrollLeft,
+                        winT = window.scrollY || document.documentElement.scrollTop,
+                        eleW,
+                        eleH;
+                box.style.display = 'block';
+                s.width = ele.offsetWidth >= 320 ? s.width : 320 - 20 + 'px'; //设置最小宽度
+                s.height = ele.offsetHeight >= 120 ? s.height : 120 - 20 + 'px'; //设置最小高度
+                eleW = ele.offsetWidth; //实际宽
+                eleH = ele.offsetHeight; //实际高
+                box_iframe.style.width = eleW+'px';  //设置iframe样式
+                box_iframe.style.height = eleH+'px'; //设置iframe样式
+                if(box_inputs.length == 3){
+                    box_inputs[0].style.width = eleW - 32 +'px';//如果是prompt，重设输入框宽度
+                }
+                box_tit.style.width = eleW - 9 +'px';
+                box.style.left = (winW/2) - (eleW/2) + winL + 'px'; //位置
+                box.style.top = (winH/2) - (eleH/2) + winT +  'px';  //位置
+                box.style.zIndex = 9999;
+                box_tit.onmousedown = function(e){
+                    var e = e || window.event,
+                            ml = e.clientX,
+                            mt = e.clientY,
+                            nl = ml-ele.offsetLeft,
+                            nt = mt-ele.offsetTop;
+                    document.onselectstart = function(e){e.returnValue = false;}//取消选择浏览器默认行为，避免ie拖动时候出现选择了文本的现象
+                    document.onmousemove = function(e){ //拖动
+                        var e, ml, mt;
+                        e = e || window.event;
+                        ml = e.clientX;
+                        mt = e.clientY;
+                        box.style.left = (ml - nl) + 'px';
+                        box.style.top = (mt - nt) + 'px';
+                    }
+                }
+                box_tit.onmouseup = function(e){
+                    var e = e || window.event
+                    document.onselectstart = function(e){e.returnValue = true;}///恢复选择浏览器默认行为
+                    document.onmousemove = null; //解除拖动事件
+                }
+            },
+            hideBox: function(type, box){ //关闭弹窗
+                box.parentNode.removeChild(box);
+                popup.boxlist[type] = null;
+            },
+            boxlist: {  //保存弹窗队列
+                "alert": null,
+                "confirm": null,
+                "prompt": null
+            }
+        }
+        window.onload = function(){
+            var oBtn =document.getElementsByTagName('input');
+            var show = document.getElementById('show');
+            oBtn[0].onclick = function(){
+                popup.init('alert', '这是一个 alert', function(){show.innerHTML = '你点击了确定'});
+            }
+            oBtn[1].onclick = function(){
+                popup.init('confirm', '这是一个 confirm', function(){show.innerHTML = '你点击了确定'}, function(){show.innerHTML = '你点击了取消'});
+            }
+            oBtn[2].onclick = function(){
+                popup.init('prompt', '这是一个 prompt', function(val){show.innerHTML = '你输入的内容为：'+val}, function(){show.innerHTML = '你点击了取消'});
+            }
+        }
+    </script>
+</head>
+<body>
+<input type="button" value="alert">
+<input type="button" value="confirm">
+<input type="button" value="prompt">
+<br>
+<br>
+<select><option value="select">select</option></select>
+<p id="show">此处显示弹窗点击结果</p>
+</body>
+</html>

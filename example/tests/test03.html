@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>第三题</title>
+    <style type="text/css">
+        *{ margin: 0; padding: 0; font-family: "宋体";}
+        body{ padding: 30px;}
+        input{ width: 300px;;}
+        p{margin-left: 500px}
+        ul{ position: absolute; width: auto; border: 1px solid #ccc;}
+        li{ list-style: none; cursor: default;}
+        #hover{ background: #000; color: #fff;}
+        strong{ font-weight: bold;}
+    </style>
+    <script type="text/javascript">
+    window.onload = function(){
+        (function(){
+            var arr = [ //源数据
+                '"abcde"&lt;abcde@163.com&gt;',
+                '"aaaaa"&lt;aaaaa@163.com&gt;',
+                '"bbbbb"&lt;bbbbb@qq.com&gt;',
+                '"cccc"&lt;cccc@qq.com&gt;',
+                '"abcdfghijk"&lt;fghijk@qq.com&gt;',
+                '"abclmnopq"&lt;lmnopq@sina.com&gt;',
+                '"abuvwxyz"&lt;uvwxyz@gmail.com&gt;',
+                '"akklklksdf"&lt;kklklksdf@soso.com&gt;',
+                '"acdaewsdvx"&lt;adaewsdvx@hotmal.com&gt;',
+                '"adsfsdfdgv"&lt;hjsdsdf@263.com&gt;',
+                '"fcxgdftgdfg"&lt;hjsdsdf@263.com&gt;',
+                '"vxcvsdfd"&lt;hjsdsdf@263.com&gt;',
+                '"xfdxvxv"&lt;hjsdsdf@263.com&gt;',
+                '"xvdgdfsd"&lt;hjsdsdf@263.com&gt;'
+            ]
+            //创建下拉框元素
+            var oInput = document.getElementsByTagName('input')[0],
+                l = oInput.offsetLeft,
+                t = oInput.offsetTop,
+                h = oInput.offsetHeight,
+                oUl = document.createElement('ul');
+                oUl.style.left = l +'px';
+                oUl.style.top = t + h +'px';
+                oUl.style.display ='none';
+            document.body.appendChild(oUl);
+            oInput.onkeyup = function(event){ //输入框自动匹配
+                seach(this.value,event);
+            }
+            oInput.onfocus = function(event){ //输入框自动匹配
+                seach(this.value,event);
+            }
+            document.onclick = function(){ //隐藏列表
+                if(document.activeElement.tagName!='INPUT'){
+                    oUl.style.display ='none';
+                }
+            }
+            document.onkeyup = function(event){ //键盘事件
+                var e = event || window.event,
+                    key = e.keyCode || e.which;   //上38 下40 回车13
+                if(oUl.style.display == 'block'){
+                    var lis = oUl.getElementsByTagName('li'),
+                        len = lis.length,
+                        hover_li = document.getElementById('hover');
+                    switch(key){
+                        case 38:
+                            if(!hover_li || lis[0].id=='hover'){
+                                lis[0].id = '';
+                                lis[len-1].id = 'hover';
+                            }else{
+                                hover_li.id = '';
+                                hover_li.previousSibling.id = 'hover';
+                            }
+                            break;
+                        case 40:
+                            if(!hover_li || lis[len-1].id=='hover'){
+                                lis[len-1].id = '';
+                                lis[0].id = 'hover';
+                            }else{
+                                hover_li.id = '';
+                                hover_li.nextSibling.id = 'hover';
+                            }
+                            break;
+                        case 13:
+                            hover_li = document.getElementById('hover');
+                            oInput.value = hover_li.innerHTML.replace(/<strong>|<\/strong>|<STRONG>|<\/STRONG>/g,'').replace('&lt;','<').replace('&gt;','>');
+                            oUl.style.display ='none';
+                            break;
+                        default:
+                            return;
+                    }
+                }
+            }
+            function seach(a,event){  //匹配函数
+                var e = event || window.event, key = e.keyCode || e.which;
+                if(a!=''){
+                    if(key==38 || key==40 || key==13){return;}
+                    var str = '',_a = a.toLowerCase();
+                    for(var i=0, len=arr.length; i<len; i++){ //拼HTML
+                        if(arr[i].split('"')[1].indexOf(_a) >= 0){
+                            str += '<li>' + arr[i].replace(_a,'<strong>'+_a+'</strong>') + '</li>'
+                        }
+                    }
+                    oUl.innerHTML = str;
+                    if(str != ''){  //如果有匹配项，显示列表UL
+                        oUl.style.display ='block';
+                        for(var i=0, lis=oUl.getElementsByTagName('li'), len=lis.length; i<len; i++){
+                            lis[i].onmouseover = function(){ //鼠标效果
+                                if(document.getElementById('hover')){document.getElementById('hover').id = ''}
+                                this.id = 'hover';
+                            }
+                            lis[i].onclick = function(){ //添加选中项
+                                oInput.value = this.innerHTML.replace(/<strong>|<\/strong>|<STRONG>|<\/STRONG>/g,'').replace('&lt;','<').replace('&gt;','>');
+                                oUl.style.display ='none';
+                            }
+                        }
+                    }else{//如果没有匹配项，隐藏UL
+                        oUl.style.display ='none';
+                    }
+                }else{ //空串不做匹配，隐藏UL
+                    oUl.style.display ='none';
+                }
+            }
+        }())
+    }
+    </script>
+</head>
+<body>
+<input type="text" value="">
+<p>
+    参考数据：
+    <br>"abcde"&lt;abcde@163.com&gt;
+    <br>"aaaaa"&lt;aaaaa@163.com&gt;
+    <br>"bbbbb"&lt;bbbbb@qq.com&gt;
+    <br>"cccc"&lt;cccc@qq.com&gt;
+    <br>"abcdfghijk"&lt;fghijk@qq.com&gt;
+    <br>"abclmnopq"&lt;lmnopq@sina.com&gt;
+    <br>"abuvwxyz"&lt;uvwxyz@gmail.com&gt;
+    <br>"akklklksdf"&lt;kklklksdf@soso.com&gt;
+    <br>"acdaewsdvx"&lt;adaewsdvx@hotmal.com&gt;
+    <br>"adsfsdfdgv"&lt;hjsdsdf@263.com&gt;
+    <br>"fcxgdftgdfg"&lt;hjsdsdf@263.com&gt;
+    <br>"vxcvsdfd"&lt;hjsdsdf@263.com&gt;
+    <br>"xfdxvxv"&lt;hjsdsdf@263.com&gt;
+    <br>"xvdgdfsd"&lt;hjsdsdf@263.com&gt;
+
+</p>
+</body>
+</html>
