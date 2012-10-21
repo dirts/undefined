@@ -25,6 +25,11 @@
         #a p, #img p{ text-align: right;}
         #url, #imgUrl{width: 298px; border: 1px solid #ccc; margin: 10px 0;}
         #getUrl, #getImgUrl{border: 1px solid #ccc; padding: 1px 5px;}
+        #ff{ width: 38px; position: absolute; top: 51px; left: 496px;}
+        #fs{ width: 38px; position: absolute; top: 51px; left: 541px;}
+        #fc{ width: 18px; position: absolute; top: 51px; left: 586px;}
+        #a{ position: absolute; top: 51px; left: 611px;}
+        #img{ position: absolute; top: 51px; left: 638px;}
     </style>
     <script type="text/javascript">
         window.onload = function(){
@@ -154,36 +159,37 @@
                     $('img').style.display = 'none';
                 }
                 function show (ele, list, tag){ //显示元素，ele触发元素,被显示的元素, tag是否重设list宽度
-                    var ele_l = ele.offsetLeft,
-                            ele_t = ele.offsetTop,
-                            ele_w = ele.offsetWidth,
-                            ele_h = ele.offsetHeight,
-                            list_w = list.offsetWidth,
-                            list_h,
-                            w = document.body.offsetWidth,
-                            h = document.body.offsetHeight;
+                    var a = navigator.userAgent.indexOf('MSIE') > -1 ? /\d/.exec(navigator.userAgent.split(';')[1]) : 8,
+                        ele_l = ele.offsetLeft,
+                        ele_t = ele.offsetTop,
+                        ele_w = ele.offsetWidth,
+                        ele_h = ele.offsetHeight,
+                        list_w = list.offsetWidth,
+                        list_h,
+                        b_t = $('bar').offsetTop,
+                        b_l = $('bar').offsetLeft;
                     if(tag){list.style.width = ele_w - 2 + 'px';}
                     list.style.position = 'absolute';
                     list.style.display = 'block';
                     list_h = list.offsetHeight;
-                    if((ele_t+ele_h/2)<=(h/2) || list_h<=(h-ele_t-ele_h)){
+                    if(a>7){
                         list.style.top = ele_t + ele_h + 'px';
-                    }else{
-                        list.style.top = ele_t - list_h + 'px';
-                    }
-                    if((ele_l+ele_w/2)<=(w/2) || list_w<=(w-ele_l)){
                         list.style.left = ele_l + 'px';
                     }else{
-                        list.style.left = ele_l + ele_w - list_w + 'px';
+                        list.style.top = ele_t + ele_h + b_t + 1 + 'px';
+                        list.style.left = ele_l + b_l + 1 +'px';
                     }
-
                 }
                 function chose (command, list){//绑定二级功能按钮
                     for(var i=0, arr=list.getElementsByTagName('li'), len=arr.length; i<len; i++){
                         arr[i].onclick = function(){
                             editor.execCommand(command, false, this.title);
                             list.style.display = 'none';
-                            $(command).innerHTML = this.innerHTML;
+                            if(list.id=='fc'){
+                                $(command).style.backgroundColor = this.title;
+                            }else{
+                                $(command).innerHTML = this.innerHTML;
+                            }
                         }
                     }
                 }
@@ -192,7 +198,7 @@
     </script>
 </head>
 <body>
-    <div class="bar">
+    <div class="bar" id="bar">
         <ul id="barBtn">
             <li class="n" title="粗体" id="bold" unselectable="on">B</li>
             <li class="n" title="居左对齐" id="justifyleft" unselectable="on">L</li>
