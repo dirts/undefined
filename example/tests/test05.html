@@ -47,8 +47,12 @@
                     barBtn[i].onclick = function(event){
                         var command = this.id,e = event || window.event;
                         switch (command){
-                            case 'insertimage':
+                            case 'insertimage':  //插入图像
                                 var img = $('img');
+                                $('ff').style.display = 'none';
+                                $('fs').style.display = 'none';
+                                $('fc').style.display = 'none';
+                                $('a').style.display = 'none';
                                 if(img.style.display == 'none'){
                                     show(this, img, false);
                                     $('getImgUrl').onclick = function(){
@@ -73,11 +77,15 @@
                                     e.cancelBubble = true;
                                 }
                                 break;
-                            case 'createlink':
-                                if(navigator.userAgent.indexOf('MSIE')>-1){
+                            case 'createlink': //插入链接
+                                $('ff').style.display = 'none';
+                                $('fs').style.display = 'none';
+                                $('fc').style.display = 'none';
+                                $('img').style.display = 'none';
+                                if(navigator.userAgent.indexOf('MSIE')>-1){ //IE开启用户见面
                                     editor.body.focus();
                                     editor.execCommand(command,true);
-                                }else{
+                                }else{  //非IE自定义弹出层
                                     var a = $('a');
                                     if(a.style.display == 'none'){
                                         show(this, a, false);
@@ -103,8 +111,12 @@
                                     }
                                 }
                                 break;
-                            case 'fontname':
+                            case 'fontname': //字体
                                 var ff = $('ff');
+                                $('fs').style.display = 'none';
+                                $('fc').style.display = 'none';
+                                $('a').style.display = 'none';
+                                $('img').style.display = 'none';
                                 if(ff.style.display == 'none'){
                                     show(this, ff, true);
                                     chose(command, ff);
@@ -117,8 +129,12 @@
                                     e.cancelBubble = true;
                                 }
                                 break;
-                            case 'fontsize':
+                            case 'fontsize': //字号
                                 var fs = $('fs');
+                                $('ff').style.display = 'none';
+                                $('fc').style.display = 'none';
+                                $('a').style.display = 'none';
+                                $('img').style.display = 'none';
                                 if(fs.style.display == 'none'){
                                     show(this, fs, true);
                                     chose(command, fs);
@@ -131,8 +147,12 @@
                                     e.cancelBubble = true;
                                 }
                                 break;
-                            case 'forecolor':
+                            case 'forecolor': //字色
                                 var fc = $('fc');
+                                $('ff').style.display = 'none';
+                                $('fs').style.display = 'none';
+                                $('a').style.display = 'none';
+                                $('img').style.display = 'none';
                                 if(fc.style.display == 'none'){
                                     show(this, fc, true);
                                     chose(command, fc);
