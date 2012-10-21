@@ -3,8 +3,239 @@
 <head>
     <meta charset="UTF-8">
     <title>第五题</title>
+    <style type="text/css">
+        *{ margin: 0; padding: 0; list-style: none; border: none;}
+        body{ padding: 20px; font: 12px/120% "宋体"; text-align: center;}
+        .bar{ margin: 0 auto; border: 1px #ccc solid; background: #E3ECF0; width: 600px; height: 30px; padding: 10px 0 0 10px;}
+        .bar ul li.n{ background: #fff; overflow: hidden; padding: 0 7px; cursor: pointer; float: left; border: 1px #ccc solid; margin: 0 5px 0 0; height: 18px; line-height: 18px; text-align: center;}
+        .bar ul li.on{ background: #fff;}
+        #fs, #ff, #fc, #a, #img{ border: 1px #ccc solid; background: #fff;}
+        .bar ul li.f_c{ padding: 0; background: #000; width: 18px;}
+        #fc li{ width: 18px; height: 18px;}
+        #fc li.black{ background: #000;}
+        #fc li.red{ background: #FF1425;}
+        #fc li.yellow{ background: #FFFD06;}
+        #fc li.blue{ background: #0B0DCC;}
+        #edit{overflow: hidden; margin: 0 auto; border: 1px #ccc solid; border-top: none; width: 610px; height:400px; text-align: left; outline:none; }
+        iframe{ width:610px; height:400px;}
+        :root iframe{ width:590px\9; padding-left:10px\9;}
+        .list li{ cursor: pointer; border-bottom: 1px #ccc solid; background: #fff; height: 18px; line-height: 18px;}
+        {border: 1px #ccc solid;}
+        #a, #img{ width: 300px; height: 70px; padding: 10px; text-align: left;}
+        #a p, #img p{ text-align: right;}
+        #url, #imgUrl{width: 298px; border: 1px solid #ccc; margin: 10px 0;}
+        #getUrl, #getImgUrl{border: 1px solid #ccc; padding: 1px 5px;}
+    </style>
+    <script type="text/javascript">
+        window.onload = function(){
+            (function(){
+                var $ = function(id){return document.getElementById(id)}
+                var barBtn = $('barBtn').childNodes;
+                var ifr = document.createElement('iframe'); //创建iframe
+                ifr.frameBorder = 0;//去边框
+                ifr.scrolling = "no";//去滚动条
+                $('edit').appendChild(ifr);//插入dom
+                var editor = ifr.contentDocument || ifr.contentWindow.document;//获取iframe的document
+                editor.designMode = 'on';//设置为可编辑
+                editor.write('<html><head></head><body>editor</body></html>');//初始化内容
+                for(var i=0, len=barBtn.length; i<len; i++){ //绑定功能按钮
+                    barBtn[i].onclick = function(event){
+                        var command = this.id,e = event || window.event;
+                        switch (command){
+                            case 'insertimage':
+                                var img = $('img');
+                                if(img.style.display == 'none'){
+                                    show(this, img, false);
+                                    $('getImgUrl').onclick = function(){
+                                        editor.body.focus();
+                                        editor.execCommand(command, false, $('imgUrl').value);
+                                        img.style.display = 'none';
+                                    }
+                                    img.onclick = function(event){
+                                        e = event || window.event;
+                                        if(e.stopPropagation){
+                                            e.stopPropagation();
+                                        }else{
+                                            e.cancelBubble = true;
+                                        }
+                                    }
+                                }else{
+                                    img.style.display = 'none';
+                                }
+                                if(e.stopPropagation){
+                                    e.stopPropagation();
+                                }else{
+                                    e.cancelBubble = true;
+                                }
+                                break;
+                            case 'createlink':
+                                if(navigator.userAgent.indexOf('MSIE')>-1){
+                                    editor.body.focus();
+                                    editor.execCommand(command,true);
+                                }else{
+                                    var a = $('a');
+                                    if(a.style.display == 'none'){
+                                        show(this, a, false);
+                                        $('getUrl').onclick = function(){
+                                            editor.execCommand(command,false, $('url').value);
+                                            a.style.display = 'none';
+                                        }
+                                        a.onclick = function(event){
+                                            e = event || window.event;
+                                            if(e.stopPropagation){
+                                                e.stopPropagation();
+                                            }else{
+                                                e.cancelBubble = true;
+                                            }
+                                        }
+                                    }else{
+                                        a.style.display = 'none';
+                                    }
+                                    if(e.stopPropagation){
+                                        e.stopPropagation();
+                                    }else{
+                                        e.cancelBubble = true;
+                                    }
+                                }
+                                break;
+                            case 'fontname':
+                                var ff = $('ff');
+                                if(ff.style.display == 'none'){
+                                    show(this, ff, true);
+                                    chose(command, ff);
+                                }else{
+                                    ff.style.display = 'none';
+                                }
+                                if(e.stopPropagation){
+                                    e.stopPropagation();
+                                }else{
+                                    e.cancelBubble = true;
+                                }
+                                break;
+                            case 'fontsize':
+                                var fs = $('fs');
+                                if(fs.style.display == 'none'){
+                                    show(this, fs, true);
+                                    chose(command, fs);
+                                }else{
+                                    fs.style.display = 'none';
+                                }
+                                if(e.stopPropagation){
+                                    e.stopPropagation();
+                                }else{
+                                    e.cancelBubble = true;
+                                }
+                                break;
+                            case 'forecolor':
+                                var fc = $('fc');
+                                if(fc.style.display == 'none'){
+                                    show(this, fc, true);
+                                    chose(command, fc);
+                                }else{
+                                    fc.style.display = 'none';
+                                }
+                                if(e.stopPropagation){
+                                    e.stopPropagation();
+                                }else{
+                                    e.cancelBubble = true;
+                                }
+                                break;
+                            default : //没有弹出窗的按钮
+                                editor.execCommand(command, false, null);
+                                break;
+                        }
+                    }
+                }
+                document.onclick = editor.onclick = function(){
+                    $('ff').style.display = 'none';
+                    $('fs').style.display = 'none';
+                    $('fc').style.display = 'none';
+                    $('a').style.display = 'none';
+                    $('img').style.display = 'none';
+                }
+                function show (ele, list, tag){ //显示元素，ele触发元素,被显示的元素, tag是否重设list宽度
+                    var ele_l = ele.offsetLeft,
+                            ele_t = ele.offsetTop,
+                            ele_w = ele.offsetWidth,
+                            ele_h = ele.offsetHeight,
+                            list_w = list.offsetWidth,
+                            list_h,
+                            w = document.body.offsetWidth,
+                            h = document.body.offsetHeight;
+                    if(tag){list.style.width = ele_w - 2 + 'px';}
+                    list.style.position = 'absolute';
+                    list.style.display = 'block';
+                    list_h = list.offsetHeight;
+                    if((ele_t+ele_h/2)<=(h/2) || list_h<=(h-ele_t-ele_h)){
+                        list.style.top = ele_t + ele_h + 'px';
+                    }else{
+                        list.style.top = ele_t - list_h + 'px';
+                    }
+                    if((ele_l+ele_w/2)<=(w/2) || list_w<=(w-ele_l)){
+                        list.style.left = ele_l + 'px';
+                    }else{
+                        list.style.left = ele_l + ele_w - list_w + 'px';
+                    }
+
+                }
+                function chose (command, list){//绑定二级功能按钮
+                    for(var i=0, arr=list.getElementsByTagName('li'), len=arr.length; i<len; i++){
+                        arr[i].onclick = function(){
+                            editor.execCommand(command, false, this.title);
+                            list.style.display = 'none';
+                            $(command).innerHTML = this.innerHTML;
+                        }
+                    }
+                }
+            }())
+        }
+    </script>
 </head>
 <body>
+    <div class="bar">
+        <ul id="barBtn">
+            <li class="n" title="粗体" id="bold" unselectable="on">B</li>
+            <li class="n" title="居左对齐" id="justifyleft" unselectable="on">L</li>
+            <li class="n" title="居中对齐" id="justifycenter" unselectable="on">C</li>
+            <li class="n" title="居右对齐" id="justifyright" unselectable="on">R</li>
+            <li class="n f_f" title="字体" id="fontname" unselectable="on">字体</li>
+            <li class="n f_s" title="字号" id="fontsize" unselectable="on">字号</li>
+            <li class="n f_c" title="字体颜色"  id="forecolor" unselectable="on">&nbsp;</li>
+            <li class="n" title="插入超链接"  id="createlink" unselectable="on">A</li>
+            <li class="n" title="插入图像"  id="insertimage" unselectable="on">IMG</li>
+        </ul>
+    </div>
 
+    <div id="edit"></div>
+
+    <ul id="ff" class="list" style="display: none;" unselectable="on">
+        <li title="宋体" unselectable="on">宋体</li>
+        <li title="黑体" unselectable="on">黑体</li>
+    </ul>
+    <ul id="fs" class="list" style="display: none;" unselectable="on">
+        <li title="1" unselectable="on">一号</li>
+        <li title="2" unselectable="on">二号</li>
+        <li title="3" unselectable="on">三号</li>
+        <li title="4" unselectable="on">四号</li>
+        <li title="5" unselectable="on">五号</li>
+        <li title="6" unselectable="on">六号</li>
+        <li title="7" unselectable="on">七号</li>
+    </ul>
+    <ul id="fc" class="list" style="display: none;" unselectable="on">
+        <li title="#000000" class="black" unselectable="on">&nbsp;</li>
+        <li title="#FF1425" class="red" unselectable="on">&nbsp;</li>
+        <li title="#FFFD06" class="yellow" unselectable="on">&nbsp;</li>
+        <li title="#0B0DCC" class="blue" unselectable="on">&nbsp;</li>
+    </ul>
+    <div id="a" style=" display: none;" unselectable="on">
+        请输入链接地址：
+        <input type="text" id="url">
+        <p unselectable="on"><input type="button" value="确定"id="getUrl" unselectable="on"></p>
+    </div>
+    <div id="img" style=" display: none;" unselectable="on">
+        请输入图片地址：
+        <input type="text" id="imgUrl">
+        <p unselectable="on"><input type="button" value="确定"id="getImgUrl" unselectable="on"></p>
+    </div>
 </body>
 </html>
