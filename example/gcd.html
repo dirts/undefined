@@ -18,26 +18,18 @@
             }
             return a;
         }
-function gcd2(a, b){
-    var t;
-    if(a<b){
-        t = b;
-        b = a;
-        a = t;
-    }
-    if(b != 0){
-        return arguments.callee(b,a%b);
-    }
-    return a
-}
-//        console.time('gcd1');
-//        console.log(gcd1(2345757567562323232323756776789,8765567567567567657432));
-//        console.timeEnd('gcd1');
-
-        console.time('gcd2');
-        console.log(gcd2(2345757567562323232323756776789,8765567567567567657432));
-        console.timeEnd('gcd2');
-
+        function gcd2(a, b){
+            var t;
+            if(a<b){
+                t = b;
+                b = a;
+                a = t;
+            }
+            if(b != 0){
+                return arguments.callee(b,a%b);
+            }
+            return a
+        }
     </script>
 </head>
 <body>
