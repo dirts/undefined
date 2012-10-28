@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Find the two the number of the greatest common divisor</title>
+    <script type="text/javascript">
+        function gcd1(a, b){
+            var t;
+            if(a<b){
+                t = b;
+                b = a;
+                a = t;
+            }
+            while(b!=0){
+                t = b;
+                b = a%b;
+                a = t;
+            }
+            return a;
+        }
+function gcd2(a, b){
+    var t;
+    if(a<b){
+        t = b;
+        b = a;
+        a = t;
+    }
+    if(b != 0){
+        return arguments.callee(b,a%b);
+    }
+    return a
+}
+//        console.time('gcd1');
+//        console.log(gcd1(2345757567562323232323756776789,8765567567567567657432));
+//        console.timeEnd('gcd1');
+
+        console.time('gcd2');
+        console.log(gcd2(2345757567562323232323756776789,8765567567567567657432));
+        console.timeEnd('gcd2');
+
+    </script>
+</head>
+<body>
+</body>
+</html>

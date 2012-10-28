@@ -24,7 +24,7 @@
              * text:弹窗显示的文字
              * fun1:点击确定运行的函数，如果弹窗类型是prompt，第一个参数为弹窗文本框的value
              * fun2:点击取消运行的函数
-             * */
+             */
             init: function(type, text, fun1, fun2){
                 if(popup.boxlist[type]){return;}//如果存在弹窗，返回
                 var box = popup.createBox(type, text, fun1, fun2);
