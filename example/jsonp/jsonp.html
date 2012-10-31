@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>jsonp</title>
+    <script type="text/javascript">
+        var callback = function(v){
+            alert(v);
+        }
+
+        window.onload = function () {
+            var head = document.head || document.getElementsByTagName('head')[0];
+            var script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.src = 'result.js';
+            head.appendChild(script);
+        }
+    </script>
+</head>
+<body>
+
+</body>
+</html>
