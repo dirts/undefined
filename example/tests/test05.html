@@ -82,35 +82,30 @@
                                 $('fs').style.display = 'none';
                                 $('fc').style.display = 'none';
                                 $('img').style.display = 'none';
-                                if(navigator.userAgent.indexOf('MSIE')>-1){ //IE开启用户见面
-                                    editor.body.focus();
-                                    editor.execCommand(command,true);
-                                }else{  //非IE自定义弹出层
-                                    var a = $('a');
-                                    if(a.style.display == 'none'){
-                                        show(this, a, false);
-                                        $('getUrl').onclick = function(){
-                                            editor.execCommand(command,false, $('url').value);
-                                            a.style.display = 'none';
-                                        }
-                                        a.onclick = function(event){
-                                            e = event || window.event;
-                                            if(e.stopPropagation){
-                                                e.stopPropagation();
-                                            }else{
-                                                e.cancelBubble = true;
-                                            }
-                                        }
-                                    }else{
+                                var a = $('a');
+                                if(a.style.display == 'none'){
+                                    show(this, a, false);
+                                    $('getUrl').onclick = function(){
+                                        editor.execCommand(command,false, $('url').value);
                                         a.style.display = 'none';
                                     }
-                                    if(e.stopPropagation){
-                                        e.stopPropagation();
-                                    }else{
-                                        e.cancelBubble = true;
+                                    a.onclick = function(event){
+                                        e = event || window.event;
+                                        if(e.stopPropagation){
+                                            e.stopPropagation();
+                                        }else{
+                                            e.cancelBubble = true;
+                                        }
                                     }
+                                }else{
+                                    a.style.display = 'none';
                                 }
-                                break;
+                                if(e.stopPropagation){
+                                    e.stopPropagation();
+                                }else{
+                                    e.cancelBubble = true;
+                                }
+                            break;
                             case 'fontname': //字体
                                 var ff = $('ff');
                                 $('fs').style.display = 'none';
