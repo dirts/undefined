@@ -30,6 +30,31 @@
             }
             return a
         }
+        function gcd3(a, b){
+            var t;
+            if(a<b){
+                t = b;
+                b = a;
+                a = t;
+            }
+            for(var i=b;i>0;i--){
+                if((a%i==0) && (b%i==0)){
+                    return i;
+                }
+            }
+        }
+
+//        console.time('gcd1');
+//        console.log(gcd1(10000300,324234324));
+//        console.timeEnd('gcd1');
+
+//        console.time('gcd2');
+//        console.log(gcd2(10000300,324234324));
+//        console.timeEnd('gcd2');
+//
+        console.time('gcd3');
+        console.log(gcd3(10000300,324234324));
+        console.timeEnd('gcd3');
     </script>
 </head>
 <body>
