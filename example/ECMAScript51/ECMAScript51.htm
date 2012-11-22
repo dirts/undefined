@@ -1,98 +1,150 @@
 <!DOCTYPE html>
 <!-- saved from url=(0023)http://ecmascript.cn/#0 -->
-<html version="g42dymwpi--nx"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<html version="g42dymwpi--nx">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-<title>ECMAScript5.1中文版 » 前端手记</title>
-<link href="./ECMAScript51_files/basic.css" rel="styleSheet" type="text/css">
-<script type="text/javascript" src="./ECMAScript51_files/data.js"></script>
-<script type="text/javascript">
-    window.onload = function() {
-        var id = 0;
-        function visit(node, level) {
-            var r = document.createDocumentFragment();
-            
-            if (node.title) {
-                var heading = document.createElement("a");
-                heading.innerHTML = node.title.trim();
-                heading.href = "#" + (id++).toString();
-                if(node.class) {
-                    heading.className = node.class;
+    <title>ECMAScript5.1中文版 » 前端手记</title>
+    <link href="./ECMAScript51_files/basic.css" rel="styleSheet" type="text/css">
+    <script type="text/javascript" src="./ECMAScript51_files/data.js"></script>
+    <script type="text/javascript">
+        window.onload = function () {
+            var id = 0;
+
+            function visit(node, level) {
+                var r = document.createDocumentFragment();
+
+                if (node.title) {
+                    var heading = document.createElement("a");
+                    heading.innerHTML = node.title.trim();
+                    heading.href = "#" + (id++).toString();
+                    if (node.class) {
+                        heading.className = node.class;
+                    }
+                    r.appendChild(heading);
                 }
-                r.appendChild(heading);
-            }
-            if(node.sections) {
-                var children = document.createElement("ol")
-                for(var i = 0; i< node.sections.length; i++) {
-                    var child = document.createElement("li");
-                    child.appendChild(visit(node.sections[i],level+1));
-                    children.appendChild(child);
+                if (node.sections) {
+                    var children = document.createElement("ol")
+                    for (var i = 0; i < node.sections.length; i++) {
+                        var child = document.createElement("li");
+                        child.appendChild(visit(node.sections[i], level + 1));
+                        children.appendChild(child);
+                    }
+                    r.appendChild(children);
                 }
-                r.appendChild(children);
+                return r;
+
             }
-            return r;
-            
+
+            var toc = visit(data, 0);
+            toc.childNodes[0].className = "toc";
+            document.querySelector("aside#sidebar").appendChild(toc);
+
+
+            var id = 0;
+            var block = 0;
+
+            function content(node, level) {
+                var r = document.createDocumentFragment();
+
+                if (node.title) {
+                    var heading = document.createElement("h" + level);
+                    var a = document.createElement("a");
+                    a.id = (id++).toString();
+                    a.innerHTML = node.title.trim();
+                    heading.appendChild(a);
+                    if (node.class) {
+                        heading.className = node.class;
+                    }
+                    r.appendChild(heading);
+                }
+                var tmp = document.createElement("div");
+                if (node.content) {
+                    for (var i = 0; i < node.content.length; i++) {
+                        tmp.innerHTML = node.content[i];
+
+                        tmp.children[0].id = "block" + (block++);
+
+                        r.appendChild(tmp.children[0]);
+                    }
+                }
+                if (node.sections) {
+                    for (var i = 0; i < node.sections.length; i++) {
+                        r.appendChild(content(node.sections[i], level + 1));
+                    }
+                }
+                return r;
+            }
+
+            var cxt = content(data, 0);
+            document.querySelector("article").appendChild(cxt);
+            var placeHolder = document.createElement("div");
+            placeHolder.style.height = "100%";
+            document.querySelector("article").appendChild(placeHolder);
         }
-        var toc = visit(data,0);
-        toc.childNodes[0].className = "toc";
-        document.querySelector("aside#sidebar").appendChild(toc);
+    </script>
+    <style>@-moz-keyframes nodeInserted {
+               from {
+                   opacity: 0;
+               }
+               to {
+                   opacity: 1;
+               }
+           }
 
-
-
-
-        var id = 0;
-        var block = 0;
-        function content(node, level) {
-            var r = document.createDocumentFragment();
-            
-            if (node.title) {
-                var heading = document.createElement("h"+level);
-                var a = document.createElement("a");
-                a.id = (id++).toString();
-                a.innerHTML = node.title.trim();
-                heading.appendChild(a);
-                if(node.class) {
-                    heading.className = node.class;
-                }
-                r.appendChild(heading);
-            }
-            var tmp = document.createElement("div");
-            if(node.content) {
-                for(var i = 0; i< node.content.length; i++) {
-                    tmp.innerHTML = node.content[i];
-                    
-                    tmp.children[0].id = "block" + (block++);                    
-                    
-                    r.appendChild(tmp.children[0]);
-                }
-            }
-            if(node.sections) {
-                for(var i = 0; i< node.sections.length; i++) {
-                    r.appendChild(content(node.sections[i],level+1));
-                }
-            }
-            return r;            
+    @-webkit-keyframes nodeInserted {
+        from {
+            opacity: 0;
         }
-        var cxt = content(data,0);
-        document.querySelector("article").appendChild(cxt);
-        var placeHolder = document.createElement("div");
-        placeHolder.style.height = "100%";
-        document.querySelector("article").appendChild(placeHolder);
+        to {
+            opacity: 1;
+        }
     }
-</script>
-<style>@-moz-keyframes nodeInserted{from{opacity:0;}to{opacity:1;}}@-webkit-keyframes nodeInserted{from{opacity:0;}to{opacity:1;}}@-o-keyframes nodeInserted{from{opacity:0;}to{opacity:1;}}@keyframes nodeInserted{from{opacity:0;}to{opacity:1;}}embed,object{animation-duration:.001s;-ms-animation-duration:.001s;-moz-animation-duration:.001s;-webkit-animation-duration:.001s;-o-animation-duration:.001s;animation-name:nodeInserted;-ms-animation-name:nodeInserted;-moz-animation-name:nodeInserted;-webkit-animation-name:nodeInserted;-o-animation-name:nodeInserted;}</style>
+
+    @-o-keyframes nodeInserted {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    @keyframes nodeInserted {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    embed, object {
+        animation-duration: .001s;
+        -ms-animation-duration: .001s;
+        -moz-animation-duration: .001s;
+        -webkit-animation-duration: .001s;
+        -o-animation-duration: .001s;
+        animation-name: nodeInserted;
+        -ms-animation-name: nodeInserted;
+        -moz-animation-name: nodeInserted;
+        -webkit-animation-name: nodeInserted;
+        -o-animation-name: nodeInserted;
+    }</style>
 </head>
 <body>
-    <header>
-        <nav>
-            EMCAScript5.1中文手册
-            <!--[if lt IE 9]>
-               <span style="color: red"> ——您的IE浏览器版本过低，无法正确显示本页内容，请用IE9，IE10，chrome，firefox，safari等现代浏览器。</span>
-            <![endif]-->
-        </nav>
-    </header>
-    <aside id="sidebar"></aside>
-    <div id="main">
-        <article id="content">
+<header>
+    <nav>
+        EMCAScript5.1中文手册
+        <!--[if lt IE 9]>
+        <span style="color: red"> ——您的IE浏览器版本过低，无法正确显示本页内容，请用IE9，IE10，chrome，firefox，safari等现代浏览器。</span>
+        <![endif]-->
+    </nav>
+</header>
+<aside id="sidebar"></aside>
+<div id="main">
+    <article id="content">
     </article>
-    </div>
-</body></html>
+</div>
+</body>
+</html>
