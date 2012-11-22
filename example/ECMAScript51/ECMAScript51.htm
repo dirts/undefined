@@ -1,23 +1,20 @@
 <!DOCTYPE html>
-<!-- saved from url=(0023)http://ecmascript.cn/#0 -->
 <html version="g42dymwpi--nx">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
     <title>ECMAScript5.1中文版 » 前端手记</title>
     <link href="./ECMAScript51_files/basic.css" rel="styleSheet" type="text/css">
     <script type="text/javascript" src="./ECMAScript51_files/data.js"></script>
     <script type="text/javascript">
         window.onload = function () {
             var id = 0;
-
             function visit(node, level) {
                 var r = document.createDocumentFragment();
-
+                var u = decodeURIComponent('http%3A%2F%2Fwww.cssha.com%2Fwp-content%2Fuploads%2FECMAScript51%2FECMAScript51.htm%23');
                 if (node.title) {
                     var heading = document.createElement("a");
                     heading.innerHTML = node.title.trim();
-                    heading.href = "#" + (id++).toString();
+                    heading.href = u + (id++).toString();
                     if (node.class) {
                         heading.className = node.class;
                     }
@@ -33,7 +30,6 @@
                     r.appendChild(children);
                 }
                 return r;
-
             }
 
             var toc = visit(data, 0);
@@ -135,7 +131,7 @@
 <body>
 <header>
     <nav>
-        EMCAScript5.1中文手册
+        <a style="color:#fff; float: right" href="http://www.cssha.com/">前端手记</a>EMCAScript5.1中文手册
         <!--[if lt IE 9]>
         <span style="color: red"> ——您的IE浏览器版本过低，无法正确显示本页内容，请用IE9，IE10，chrome，firefox，safari等现代浏览器。</span>
         <![endif]-->
